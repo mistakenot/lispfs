@@ -9,33 +9,36 @@ open FsUnit.Xunit
 let ``Parse basic statement`` () = 
     let statement = "()"
     let actual = Lexer.tokenise statement
-    let expected = [Token.OpenB; Token.CloseB]
+    let expected = [OpenB; Token.CloseB]
     actual |> should equal expected
 
 [<Fact>]
 let ``Parse integer constant`` () = 
     let statement = "(1)"
     let actual = Lexer.tokenise statement
-    let expected = [Token.OpenB; Token.Identifier "1"; Token.CloseB]
+    let expected = [OpenB; Symb "1"; Token.CloseB]
     actual |> should equal expected
 
 [<Fact>]
 let ``Parse string constant`` () = 
-    let statement = "(abc)"
-    let actual = Lexer.tokenise statement
-    let expected = [Token.OpenB; Token.Identifier "abc"; Token.CloseB]
+    let actual = Lexer.tokenise "(abc)"
+    let expected = [OpenB; Symb "abc"; Token.CloseB]
     actual |> should equal expected
 
 [<Fact>]
 let ``Parse nested string constant`` () = 
-    let statement = "(abc (1) )"
-    let actual = Lexer.tokenise statement
-    let expected = [Token.OpenB; Token.Identifier "abc"; Token.OpenB; Token.Identifier "1"; Token.CloseB; Token.CloseB]
+    let actual = Lexer.tokenise "(abc (1))"
+    let expected = [OpenB; Symb "abc"; OpenB;  Symb "1"; CloseB; CloseB]
     actual |> should equal expected
 
 [<Fact>]
 let ``Parse multiple string identifiers`` () = 
-    let statement = "(a b c)"
-    let actual = Lexer.tokenise statement
-    let expected = [Token.OpenB; Token.Identifier "a"; Token.Identifier "b"; Token.Identifier "c"; Token.CloseB]
+    let actual = Lexer.tokenise "(a b c)"
+    let expected = [OpenB; Symb "a"; Symb "b";  Symb "c"; CloseB;]
+    actual |> should equal expected
+
+[<Fact>]
+let ``Parse multiple and nested identifiers`` () = 
+    let actual = Lexer.tokenise "(* 2 (+ 3 4))"
+    let expected = [OpenB; Symb "*"; Symb "2"; OpenB; Symb "+"; Symb "3"; Symb "4"; CloseB; CloseB;]
     actual |> should equal expected

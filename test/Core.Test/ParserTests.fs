@@ -6,66 +6,81 @@ open Xunit
 open FsUnit.Xunit
 
 [<Fact>]
-let ``Can parse single symbol`` () = 
-    // (1)
-    let actual = [OpenB; Identifier "1"; CloseB] |> Parser.parse
-    let expected = Node(Symbol "1", Nil)
-    actual |> should equal expected
+let ``Next can get atom`` () = 
+    let (next, rest) = [Symb "0"; Symb "1"] |> Parser.next
+    next |> should equal [Symb "0"]
+    rest |> should equal [Symb "1"]
 
 [<Fact>]
-let ``Can parse multiple symbols`` () = 
-    // (+ 1 2)
-    let actual = [OpenB; Identifier "+"; Identifier "1"; Identifier "2"; CloseB] |> Parser.parse
-    let expected = Node(Symbol "+", Node(Symbol "1", Node(Symbol "2", Nil)))
-    actual |> should equal expected
+let ``Next can get tree`` () = 
+    let (next, rest) = [OpenB; Symb "0"; CloseB; Symb "1"] |> Parser.next
+    next |> should equal [OpenB; Symb "0"; CloseB]
+    rest |> should equal [Symb "1"]
 
 [<Fact>]
-let ``Can preprocess multiple symbols`` () = 
-    // (+ 1 2)
-    let actual = [OpenB; Identifier "+"; Identifier "1"; Identifier "2"; CloseB] |> Parser.preprocess
-    let expected = [OpenB; Identifier "+"; OpenB; Identifier "1"; OpenB; Identifier "2"; CloseB; CloseB; CloseB;]
-    actual |> should equal expected
+let ``Parse nil`` () = 
+    let actual = [] |> Parser.parse
+    actual |> should equal Nil
 
-let ``Can parse nested symbols`` () = 
+[<Fact>]    
+let ``Parse symbol`` () = 
+    let actual = [Symb "0"] |> Parser.parse
+    actual |> should equal (Atom "0")
+
+[<Fact>]
+let ``Parse simple tree`` () = 
+    // (0)
+    let actual = [OpenB; Symb "0"; CloseB] |> Parser.parse
+    actual |> should equal (Tree(Atom "0", Nil))
+
+[<Fact>]
+let ``Parse multiple atoms`` () = 
+    // (0 1)
+    let actual = [OpenB; Symb "0"; Symb "1"; CloseB] |> Parser.parse
+    actual |> should equal (Tree(Atom "0", Tree(Atom "1", Nil)))
+
+[<Fact>]
+let ``Parse nested simple tree`` () = 
+    // (0 (1))
+    let actual = [OpenB; Symb "0"; OpenB; Symb "1"; CloseB; CloseB] |> Parser.parse
+    actual |> should equal (
+        Tree(
+            Atom "0", 
+            Tree(
+                Tree(Atom "1", Nil), 
+                Nil)))
+
+[<Fact>]
+let ``Parse nested multiple atoms`` () = 
+    // (0 (1 2)) -> (0 ((1(2))))
+    let actual = [OpenB; Symb "0"; OpenB; Symb "1"; Symb "2"; CloseB; CloseB] |> Parser.parse
+    actual |> should equal (
+        Tree(
+            Atom "0", 
+            Tree(
+                Tree(
+                    Atom "1", 
+                    Tree(
+                        Atom "2",
+                        Nil)), 
+                Nil)))
+
+[<Fact>]
+let ``Parse nested multiple symbols and atoms`` () = 
     // (* 2 (+ 3 4))
-    let actual = [OpenB; Identifier "*"; Identifier "2"; OpenB; Identifier "+"; Identifier "3"; Identifier "4"; CloseB; CloseB] |> Parser.parse
+    let actual = [OpenB; Symb "*"; Symb "2"; OpenB; Symb "+"; Symb "3"; Symb "4"; CloseB; CloseB] |> Parser.parse
     let expected = 
-        Node(
-            Symbol "*", 
-            Node(
-                Symbol "2", 
-                Node(
-                    Node(
-                        Symbol("+"), 
-                        Node(
-                            Symbol("3"),
-                            Node(
-                                Symbol "4", 
+        Tree(
+            Atom "*", 
+            Tree(
+                Atom "2", 
+                Tree(
+                    Tree(
+                        Atom("+"), 
+                        Tree(
+                            Atom("3"),
+                            Tree(
+                                Atom "4", 
                                 Nil)))
                     , Nil)))
-    actual |> should equal expected
-
-[<Fact>]
-let ``Get enclosed list 2`` () = 
-    let actual = [OpenB; Identifier "*"; OpenB; Identifier "1"; CloseB; CloseB;] |> Parser.getEnclosedList
-    let (a,b) = actual
-    a |> should equal [Identifier "*"; OpenB; Identifier "1"; CloseB;]
-    b.IsEmpty |> should equal true
-
-[<Fact>]
-let ``Get enclosed list 3`` () =    
-    let actual = [OpenB; Identifier "1"; CloseB; Identifier "2"]
-    let (a, b) = actual |> Parser.getEnclosedList
-    a |> should equal [Identifier "1"]
-    b |> should equal [Identifier "2"]
-
-// [<Fact>]
-// let ``Get enclosed list 3`` () = 
-//     let actual = [Identifier "*"; OpenB; Identifier "1"; CloseB;] 
-//     actual |> Parser.getEnclosedList |> Parser.getEnclosedList|> should equal [Identifier "1";]
-
-[<Fact>]
-let ``Preprocess`` () = 
-    let actual = [OpenB; Identifier "1"; Identifier "2"; CloseB] |> Parser.preprocess
-    let expected = [OpenB; Identifier "1"; OpenB; Identifier "2"; CloseB; CloseB]
     actual |> should equal expected
