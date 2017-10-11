@@ -20,7 +20,7 @@ let ``Next can get tree`` () =
 [<Fact>]
 let ``Parse nil`` () = 
     let actual = [] |> Parser.parse
-    actual |> should equal Nil
+    actual |> should equal (Atom Nil)
 
 [<Fact>]    
 let ``Parse symbol`` () = 
@@ -31,13 +31,13 @@ let ``Parse symbol`` () =
 let ``Parse simple tree`` () = 
     // (0)
     let actual = [OpenB; Symb "0"; CloseB] |> Parser.parse
-    actual |> should equal (Tree(Atom(Int 0), Nil))
+    actual |> should equal (Tree(Atom(Int 0), Atom Nil))
 
 [<Fact>]
 let ``Parse multiple atoms`` () = 
     // (0 1)
     let actual = [OpenB; Symb "0"; Symb "1"; CloseB] |> Parser.parse
-    actual |> should equal (Tree(Atom(Int 0), Tree(Atom(Int 1), Nil)))
+    actual |> should equal (Tree(Atom(Int 0), Tree(Atom(Int 1), Atom Nil)))
 
 [<Fact>]
 let ``Parse nested simple tree`` () = 
@@ -47,8 +47,8 @@ let ``Parse nested simple tree`` () =
         Tree(
             Atom(Int 0), 
             Tree(
-                Tree(Atom(Int 1), Nil), 
-                Nil)))
+                Tree(Atom(Int 1), Atom Nil), 
+                Atom Nil)))
 
 [<Fact>]
 let ``Parse nested multiple atoms`` () = 
@@ -62,8 +62,8 @@ let ``Parse nested multiple atoms`` () =
                     Atom(Int 1), 
                     Tree(
                         Atom(Int 2),
-                        Nil)), 
-                Nil)))
+                        Atom Nil)), 
+                Atom Nil)))
 
 [<Fact>]
 let ``Parse nested multiple symbols and atoms`` () = 
@@ -81,6 +81,6 @@ let ``Parse nested multiple symbols and atoms`` () =
                             Atom(Int 3),
                             Tree(
                                 Atom(Int 4),
-                                Nil)))
-                    , Nil)))
+                                Atom Nil)))
+                    , Atom Nil)))
     actual |> should equal expected
