@@ -25,19 +25,19 @@ let ``Parse nil`` () =
 [<Fact>]    
 let ``Parse symbol`` () = 
     let actual = [Symb "0"] |> Parser.parse
-    actual |> should equal (Atom "0")
+    actual |> should equal (Atom(Int 0))
 
 [<Fact>]
 let ``Parse simple tree`` () = 
     // (0)
     let actual = [OpenB; Symb "0"; CloseB] |> Parser.parse
-    actual |> should equal (Tree(Atom "0", Nil))
+    actual |> should equal (Tree(Atom(Int 0), Nil))
 
 [<Fact>]
 let ``Parse multiple atoms`` () = 
     // (0 1)
     let actual = [OpenB; Symb "0"; Symb "1"; CloseB] |> Parser.parse
-    actual |> should equal (Tree(Atom "0", Tree(Atom "1", Nil)))
+    actual |> should equal (Tree(Atom(Int 0), Tree(Atom(Int 1), Nil)))
 
 [<Fact>]
 let ``Parse nested simple tree`` () = 
@@ -45,9 +45,9 @@ let ``Parse nested simple tree`` () =
     let actual = [OpenB; Symb "0"; OpenB; Symb "1"; CloseB; CloseB] |> Parser.parse
     actual |> should equal (
         Tree(
-            Atom "0", 
+            Atom(Int 0), 
             Tree(
-                Tree(Atom "1", Nil), 
+                Tree(Atom(Int 1), Nil), 
                 Nil)))
 
 [<Fact>]
@@ -56,12 +56,12 @@ let ``Parse nested multiple atoms`` () =
     let actual = [OpenB; Symb "0"; OpenB; Symb "1"; Symb "2"; CloseB; CloseB] |> Parser.parse
     actual |> should equal (
         Tree(
-            Atom "0", 
+            Atom(Int 0), 
             Tree(
                 Tree(
-                    Atom "1", 
+                    Atom(Int 1), 
                     Tree(
-                        Atom "2",
+                        Atom(Int 2),
                         Nil)), 
                 Nil)))
 
@@ -71,16 +71,16 @@ let ``Parse nested multiple symbols and atoms`` () =
     let actual = [OpenB; Symb "*"; Symb "2"; OpenB; Symb "+"; Symb "3"; Symb "4"; CloseB; CloseB] |> Parser.parse
     let expected = 
         Tree(
-            Atom "*", 
+            Atom(Ref "*"), 
             Tree(
-                Atom "2", 
+                Atom(Int 2), 
                 Tree(
                     Tree(
-                        Atom("+"), 
+                        Atom(Ref "+"), 
                         Tree(
-                            Atom("3"),
+                            Atom(Int 3),
                             Tree(
-                                Atom "4", 
+                                Atom(Int 4),
                                 Nil)))
                     , Nil)))
     actual |> should equal expected
