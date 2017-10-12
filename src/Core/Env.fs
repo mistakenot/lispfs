@@ -4,7 +4,7 @@ open Abstractions
 open Parser
 
 let add (id: string) (value: Variable) (env: Environment) = (fun s -> 
-    if id = s then Some(value) else env s )
+    if id = s then Some(value) else env s)
 
 let get (env: Environment) (id: string) = 
     match env id with 

@@ -25,7 +25,7 @@ module Lexer
             (List.take index tail, List.skip (index + 1) tail)
         | _ -> failwith "not balanced"
 
-    let tokenise: char seq -> Token list  = 
+    let tokenise: string -> Token list  = 
 
         let identToToken = Seq.map (sprintf "%c") >> String.concat "" >> Token.Symb
 

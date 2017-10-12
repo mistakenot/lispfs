@@ -3,6 +3,7 @@ module EvalTests
 open Abstractions
 open Eval
 open Env
+open Interpreter
 open Parser
 open Xunit
 open FsUnit.Xunit

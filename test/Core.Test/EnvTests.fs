@@ -2,7 +2,7 @@ module EnvTests
 
 open Abstractions
 open Env
-open Lib
+open Interpreter
 open Xunit
 open FsUnit.Xunit
 
@@ -13,12 +13,16 @@ let ``Get nonexistent ref returns none`` () =
 [<Fact>]
 let ``Get existent ref returns value`` () = 
     let env = Env.add "ref" (Variable.Value(Atom(Int 0))) defaultEnvironment
-    env "ref" |> should equal (Some(Value(Atom(Int 0))))
+    let expected = Some(Variable.Value(Atom(Int 0)))
+    let actual = env "ref" 
+    actual |> should equal expected
 
 [<Fact>]
 let ``Get returns most recent value`` () = 
     let env = defaultEnvironment |> Env.add "ref" (Value(Atom(Int 0))) |> Env.add "ref" (Variable.Value(Atom(Int 1)))
-    env "ref" |> should equal (Some(Variable.Value(Atom(Int 1))))
+    let expected = Some(Variable.Value(Atom(Int 1)))
+    let actual = env "ref"
+    (actual.ToString()) |> should equal (expected.ToString())
 
 [<Fact>]
 let ``Fold over empty arg list returns empty env`` () =

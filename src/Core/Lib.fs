@@ -1,4 +1,4 @@
-module Libs
+module Lib
 
 open Abstractions
 open Args
@@ -29,5 +29,3 @@ let all = [
 
 let add (env: Environment) = 
     List.fold (fun e (label, body) -> Env.add label (Variable.Function body) e) env all 
-
-let defaultEnvironment: Environment = (fun s -> None) |> add
