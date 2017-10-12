@@ -15,7 +15,7 @@ let ``Eval atom returns atom`` () =
 [<Fact>]
 let ``Eval tree of (Atom, Nil)`` () = 
     let actual = Tree(Atom(Int 0), Atom(Nil)) |> Eval.run defaultEnvironment
-    let expected = Atom(Int 0)
+    let expected = Tree(Atom(Int 0), Atom(Nil))
     actual |> should equal expected
 
 [<Fact>]
@@ -31,7 +31,7 @@ let ``Eval reference to value`` () =
     let actual = (Atom (Ref "x")) |> Eval.run env
     actual |> should equal expected
 
-// [<Fact>]
+[<Fact>]
 let ``Eval identity function`` () = 
     let actual = 
         Tree(
@@ -39,5 +39,18 @@ let ``Eval identity function`` () =
             Tree(
                 Atom(Int 0), 
                 Atom Nil)) |> Eval.run defaultEnvironment
-    let expected = Atom (Int 0)
+    let expected = Tree(Atom (Int 0), Atom Nil)
+    actual |> should equal expected
+
+[<Fact>]
+let ``Eval addition function`` () = 
+    let actual = 
+        Tree(
+            Atom(Ref "+"), 
+            Tree(
+                Atom(Int 1),
+                Tree(
+                    Atom(Int 2),
+                    Atom(Nil)))) |> Eval.run defaultEnvironment
+    let expected = Atom (Int 3)            
     actual |> should equal expected

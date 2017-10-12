@@ -1,5 +1,6 @@
 module EnvTests
 
+open Eval
 open Env
 open Parser
 open Xunit
@@ -18,7 +19,7 @@ let ``Get existent ref returns value`` () =
 let ``Get returns most recent value`` () = 
     let env = defaultEnvironment |> Env.add "ref" (Atom(Int 0)) |> Env.add "ref" (Atom(Int 1))
     env "ref" |> should equal (Some(Atom(Int 1)))
-    
+
 [<Fact>]
 let ``Fold over empty arg list returns empty env`` () =
     let env = Env.foldArgs (Atom Nil) (Atom Nil) defaultEnvironment
@@ -38,7 +39,7 @@ let ``Fold over multi args returns args when called`` () =
             Atom(Ref "x"), 
             Tree(
                 Atom(Ref "y"),
-                Atom(Nil)))
+                Atom(Nil)))       
     let values = 
         Tree(
             Atom(Int 0), 

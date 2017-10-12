@@ -2,11 +2,18 @@ module Parser
 
 open Lexer
 open Types
+open System.Text.RegularExpressions
+
+type Value =
+    | Nil 
+    | Int of int
+    | Bool of bool
+    | Str of string
+    | Ref of string
 
 // S-Expression definition.
 type Tree =
-    | Nil
-    | Atom of string
+    | Atom of Value
     | Tree of (Tree * Tree)
 
 // Gets the next s-expression in the list, returning
@@ -28,11 +35,17 @@ let next list =
     if index = -1 then failwith (sprintf "Cant balance: %O" list)
     (List.take (index + 1) list, List.skip (index + 1) list)
 
+let parseValue s = 
+    if Regex.IsMatch(s, @"^\d$") then Int(System.Int32.Parse(s)) else
+    if Regex.IsMatch(s, @"\bTrue\b") then Bool(System.Boolean.Parse(s)) else
+    if Regex.IsMatch(s, "\'.+\'") then Str(s.Trim('''))
+    else Ref(s)
+
 // Parses a list of lex tokens into an S-expression.
 let rec parse = function 
-    | [] -> Nil
-    | [Symb s] -> Atom s
-    | [OpenB; CloseB] -> Nil
+    | [] -> Atom Nil
+    | [Symb s] -> parseValue s |> Atom
+    | [OpenB; CloseB] -> Atom Nil
     | OpenB :: tail -> 
         let (next, rest) = next tail
         let remainder = OpenB :: rest

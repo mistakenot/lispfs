@@ -9,7 +9,9 @@
     <Compile Include="Types.fs" />
     <Compile Include="Lexer.fs" />
     <Compile Include="Parser.fs" />
+    <compile Include="Env.fs" />
     <Compile Include="Lib.fs" />
+    <Compile Include="Eval.fs" />
   </ItemGroup>
 
 </Project>
