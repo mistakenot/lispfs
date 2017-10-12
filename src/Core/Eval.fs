@@ -18,6 +18,6 @@ let rec run (env: Environment) = function
         let variable = Env.get env id
         let args = run env r
         match variable with
-        | Function (f) -> invoke f env args
+        | Function (f) -> invoke f env args |> run env
         | Value(t) -> Tree(t, args)
     | Tree(left, right) -> Tree (run env left, run env right)

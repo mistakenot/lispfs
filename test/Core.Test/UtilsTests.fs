@@ -34,3 +34,20 @@ let ``Ref atom to string`` () =
     let expected = "x"
     let actual = Atom(Ref "x") |> treeToString
     actual |> should equal expected
+
+[<Fact>]
+let ``Atom toTree`` () = 
+    let expected = Tree(Atom(Int 0), Atom Nil)
+    let actual = [Atom(Int 0)] |> toTree
+    actual |> should equal expected
+
+[<Fact>]
+let ``Trees to tree`` () = 
+    let expected = 
+        Tree(
+            Atom(Int 0),
+            Tree(
+                Atom(Int 1),
+                Atom Nil))
+    let actual = [Atom(Int 0); Atom(Int 1)] |> toTree
+    actual |> should equal expected

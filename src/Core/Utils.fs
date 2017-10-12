@@ -14,3 +14,7 @@ let rec treeToString (tree: Tree) =
     | Atom(v) -> valueToString v
     | Tree(l, Atom Nil) -> sprintf "(%s)" (treeToString l)
     | Tree(l, r) -> sprintf "(%s %s)" (treeToString l) (treeToString r)
+
+let rec toTree = function
+    | [] -> Atom Nil
+    | head::tail -> Tree(head, toTree tail)
