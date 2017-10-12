@@ -13,9 +13,9 @@ let ``Get nonexistent ref returns none`` () =
 [<Fact>]
 let ``Get existent ref returns value`` () = 
     let env = Env.add "ref" (Variable.Value(Atom(Int 0))) defaultEnvironment
-    let expected = Some(Variable.Value(Atom(Int 0)))
-    let actual = env "ref" 
-    actual |> should equal expected
+    let expected = Some(Variable.Value(Atom(Int 0))).ToString()
+    let actual = env "ref"
+    actual.ToString() |> should equal expected
 
 [<Fact>]
 let ``Get returns most recent value`` () = 
@@ -34,7 +34,7 @@ let ``Fold over single arg returns arg when called`` () =
     let labels = Tree(Atom(Ref "x"), Atom Nil)
     let values = Tree(Atom(Int 0), Atom Nil)
     let env = Env.foldArgs labels values defaultEnvironment
-    env "x" |> should equal (Some(Value(Atom(Int 0))))
+    ((env "x").ToString()) |> should equal (Some(Value(Atom(Int 0))).ToString())
 
 [<Fact>]
 let ``Fold over multi args returns args when called`` () = 
@@ -51,5 +51,5 @@ let ``Fold over multi args returns args when called`` () =
                 Atom(Int 1),
                 Atom(Nil)))
     let env = Env.foldArgs labels values defaultEnvironment
-    env "x" |> should equal (Some(Value(Atom(Int 0))))
-    env "y" |> should equal (Some(Value(Atom(Int 1))))
+    (env "x").ToString() |> should equal (Some(Value(Atom(Int 0))).ToString())
+    (env "y").ToString() |> should equal (Some(Value(Atom(Int 1))).ToString())
