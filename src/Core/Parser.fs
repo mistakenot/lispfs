@@ -1,20 +1,8 @@
 module Parser
 
+open Abstractions
 open Lexer
-open Types
 open System.Text.RegularExpressions
-
-type Value =
-    | Nil 
-    | Int of int
-    | Bool of bool
-    | Str of string
-    | Ref of string
-
-// S-Expression definition.
-type Tree =
-    | Atom of Value
-    | Tree of (Tree * Tree)
 
 // Gets the next s-expression in the list, returning
 //  the remainder of the list as the second parametere.

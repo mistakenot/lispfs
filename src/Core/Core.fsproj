@@ -5,13 +5,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="Utils.fs" />
-    <Compile Include="Types.fs" />
+    <Compile Include="Abstractions.fs" />
+    <Compile Include="Args.fs" />
     <Compile Include="Lexer.fs" />
     <Compile Include="Parser.fs" />
     <compile Include="Env.fs" />
     <Compile Include="Lib.fs" />
     <Compile Include="Eval.fs" />
+    <Compile Include="Lisp.fs" />
   </ItemGroup>
 
 </Project>

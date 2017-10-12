@@ -1,43 +1,33 @@
-module Lib
+module Libs
 
-open Types
-open Parser
+open Abstractions
+open Args
 open Env
 
-let identity =
+// Standard library.
+
+let identity: Function =
     let labels = Atom (Ref "x")
-    let body = Atom (Ref "x")
-    ("id", Tree(body, labels))
+    let body = fun a -> a "x"
+    (labels, body)
 
-let addIntsNative = 
-    let labels = 
-        Tree(
-            Atom(Ref "x"),
-            Tree(
-                Atom(Ref "y"),
-                Atom(Nil)))
-    let factory = (fun env -> 
-        let x, y = Env.getInt "x" env, Env.getInt "y" env
-        x + y |> Int |> Atom )
-    ("_+", factory)
-
-let addInts = 
+let addInt: Function = 
     let labels = 
         Tree(
             Atom (Ref "x"),
             Tree (
                 Atom (Ref "y"),
                 Atom (Nil)))
-    let body = 
-        Tree(
-            Atom (Ref "_+"),
-            labels)
-    ("+", Tree(body, labels))
+    let body = fun e -> 
+        Atom (
+            Int(Args.int "x" e + Args.int "y" e))
+    (labels, body)
 
-let all = [identity; addInts]
-
-let native = [addIntsNative]
+let all = [
+    ("id", identity)
+    ("+", addInt)]
 
 let add (env: Environment) = 
-    let a = List.fold (fun e (label, body) -> Env.add label body e) env all 
-    List.fold (fun e (label, factory) -> Env.addNative label factory e) a native
+    List.fold (fun e (label, body) -> Env.add label (Variable.Function body) e) env all 
+
+let defaultEnvironment: Environment = (fun s -> None) |> add

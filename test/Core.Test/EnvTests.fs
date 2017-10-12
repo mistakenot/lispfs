@@ -1,8 +1,8 @@
 module EnvTests
 
-open Eval
+open Abstractions
 open Env
-open Parser
+open Lib
 open Xunit
 open FsUnit.Xunit
 
@@ -12,13 +12,13 @@ let ``Get nonexistent ref returns none`` () =
 
 [<Fact>]
 let ``Get existent ref returns value`` () = 
-    let env = Env.add "ref" (Atom(Int 0)) defaultEnvironment
-    env "ref" |> should equal (Some(Atom(Int 0)))
+    let env = Env.add "ref" (Variable.Value(Atom(Int 0))) defaultEnvironment
+    env "ref" |> should equal (Some(Value(Atom(Int 0))))
 
 [<Fact>]
 let ``Get returns most recent value`` () = 
-    let env = defaultEnvironment |> Env.add "ref" (Atom(Int 0)) |> Env.add "ref" (Atom(Int 1))
-    env "ref" |> should equal (Some(Atom(Int 1)))
+    let env = defaultEnvironment |> Env.add "ref" (Value(Atom(Int 0))) |> Env.add "ref" (Variable.Value(Atom(Int 1)))
+    env "ref" |> should equal (Some(Variable.Value(Atom(Int 1))))
 
 [<Fact>]
 let ``Fold over empty arg list returns empty env`` () =
@@ -30,7 +30,7 @@ let ``Fold over single arg returns arg when called`` () =
     let labels = Tree(Atom(Ref "x"), Atom Nil)
     let values = Tree(Atom(Int 0), Atom Nil)
     let env = Env.foldArgs labels values defaultEnvironment
-    env "x" |> should equal (Some(Atom(Int 0)))
+    env "x" |> should equal (Some(Value(Atom(Int 0))))
 
 [<Fact>]
 let ``Fold over multi args returns args when called`` () = 
@@ -47,5 +47,5 @@ let ``Fold over multi args returns args when called`` () =
                 Atom(Int 1),
                 Atom(Nil)))
     let env = Env.foldArgs labels values defaultEnvironment
-    env "x" |> should equal (Some(Atom(Int 0)))
-    env "y" |> should equal (Some(Atom(Int 1)))
+    env "x" |> should equal (Some(Value(Atom(Int 0))))
+    env "y" |> should equal (Some(Value(Atom(Int 1))))
