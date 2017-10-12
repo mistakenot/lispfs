@@ -25,7 +25,7 @@ let next list =
 
 let parseValue s = 
     if Regex.IsMatch(s, @"^\d$") then Int(System.Int32.Parse(s)) else
-    if Regex.IsMatch(s, @"\bTrue\b") then Bool(System.Boolean.Parse(s)) else
+    if Regex.IsMatch(s, @"^(true|True|false|False)$") then Bool(System.Boolean.Parse(s)) else
     if Regex.IsMatch(s, "\'.+\'") then Str(s.Trim('''))
     else Ref(s)
 

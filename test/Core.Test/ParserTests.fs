@@ -24,9 +24,19 @@ let ``Parse nil`` () =
     actual |> should equal (Atom Nil)
 
 [<Fact>]    
-let ``Parse symbol`` () = 
+let ``Parse int`` () = 
     let actual = [Symb "0"] |> Parser.parse
     actual |> should equal (Atom(Int 0))
+
+[<Fact>]
+let ``Parse bool`` () = 
+    let actual = [Symb "true"] |> Parser.parse
+    actual |> should equal (Atom(Bool true))
+
+[<Fact>]
+let ``Parse string`` () = 
+    let actual = [Symb "'test'"] |> Parser.parse
+    actual |> should equal (Atom(Str "test"))
 
 [<Fact>]
 let ``Parse simple tree`` () = 

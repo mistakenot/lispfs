@@ -23,3 +23,8 @@ let ref id args =
     match args id with
     | Atom(Ref(r)) -> r
     | _ -> sprintf "Argument %s is not a reference." id |> failwith
+
+let value id args = 
+    match args id with
+    | Atom(v) -> v
+    | _ -> sprintf "Argument %s is not a value." id |> failwith

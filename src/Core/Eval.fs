@@ -15,6 +15,7 @@ let invoke (func:Function) (env:Environment) (values:Tree) =
 let rec run (env: Environment) = function
     | Atom(v) -> Atom(v)
     | Tree(Atom(Ref id), r) -> 
+        // Function invocation
         let variable = Env.get env id
         let args = run env r
         match variable with
