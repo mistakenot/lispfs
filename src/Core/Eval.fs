@@ -17,6 +17,7 @@ let rec run (env: Environment) = function
         match variable with
         | Function (f) -> invoke f env right
         | _ -> failwith ""
+    | Tree(left, right) -> Tree (run env left, run env right)
 
 // Tree(
 //    Tree(

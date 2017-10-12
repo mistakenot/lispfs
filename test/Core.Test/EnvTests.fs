@@ -2,7 +2,7 @@ module EnvTests
 
 open Abstractions
 open Env
-open Interpreter
+open Interp
 open Xunit
 open FsUnit.Xunit
 
@@ -13,7 +13,7 @@ let ``Get nonexistent ref returns none`` () =
 [<Fact>]
 let ``Get existent ref returns value`` () = 
     let env = Env.add "ref" (Variable.Value(Atom(Int 0))) defaultEnvironment
-    let expected = Some(Variable.Value(Atom(Int 0))).ToString()
+    let expected = Some(Variable.Value(Atom(Int 0))).ToString()  // TODO fix this shit.
     let actual = env "ref"
     actual.ToString() |> should equal expected
 

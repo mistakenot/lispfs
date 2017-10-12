@@ -12,7 +12,7 @@
     <compile Include="Env.fs" />
     <Compile Include="Lib.fs" />
     <Compile Include="Eval.fs" />
-    <Compile Include="Interpreter.fs" />
+    <Compile Include="Interp.fs" />
   </ItemGroup>
 
 </Project>

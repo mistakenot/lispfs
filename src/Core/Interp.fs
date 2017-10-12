@@ -1,9 +1,9 @@
-module Interpreter
+module Interp
 
 open Lib
 open Abstractions
 
-let defaultEnvironment: Environment = (fun s -> None) |> add
+let defaultEnvironment: Environment = (fun s -> None)
 
 let lex = Lexer.tokenise
 

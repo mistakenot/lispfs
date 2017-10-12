@@ -2,27 +2,26 @@ module EvalTests
 
 open Abstractions
 open Eval
-open Env
-open Interpreter
+open Interp
 open Parser
 open Xunit
 open FsUnit.Xunit
 
-// [<Fact>]
+[<Fact>]
 let ``Eval atom returns atom`` () = 
-    let actual = Atom(Int 0) |> Eval.run defaultEnvironment
+    let actual = Atom(Int 0) |> eval
     let expected = Atom(Int 0)
     actual |> should equal expected
 
-// [<Fact>]
+[<Fact>]
 let ``Eval tree of (Atom, Nil)`` () = 
-    let actual = Tree(Atom(Int 0), Atom(Nil)) |> Eval.run defaultEnvironment
+    let actual = Tree(Atom(Int 0), Atom(Nil)) |> eval
     let expected = Tree(Atom(Int 0), Atom(Nil))
     actual |> should equal expected
 
-// [<Fact>]
-let ``Eval tree of (tree, tree), no environment`` () =
-    let actual = Tree(Atom(Int 0), Atom(Int 1)) |> Eval.run defaultEnvironment
+[<Fact>]
+let ``Eval tree of (atom, atom), no environment`` () =
+    let actual = Tree(Atom(Int 0), Atom(Int 1)) |> eval
     let expected = Tree(Atom(Int 0), Atom(Int 1))
     actual |> should equal expected
 
@@ -40,7 +39,7 @@ let ``Eval identity function`` () =
             Atom(Ref "id"), 
             Tree(
                 Atom(Int 0), 
-                Atom Nil)) |> Eval.run defaultEnvironment
+                Atom Nil)) |> eval
     let expected = Tree(Atom (Int 0), Atom Nil)
     actual |> should equal expected
 
@@ -53,6 +52,6 @@ let ``Eval addition function`` () =
                 Atom(Int 1),
                 Tree(
                     Atom(Int 2),
-                    Atom(Nil)))) |> Eval.run defaultEnvironment
+                    Atom(Nil)))) |> eval
     let expected = Atom (Int 3)            
     actual |> should equal expected

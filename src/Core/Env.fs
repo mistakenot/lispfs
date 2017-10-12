@@ -3,8 +3,9 @@ module Env
 open Abstractions
 open Parser
 
-let add (id: string) (value: Variable) (env: Environment) = (fun s -> 
-    if id = s then Some(value) else env s)
+let add (id: string) (value: Variable) (env: Environment) = 
+    let next: Environment = (fun s -> if id = s then Some(value) else env s)
+    next
 
 let get (env: Environment) (id: string) = 
     match env id with 
