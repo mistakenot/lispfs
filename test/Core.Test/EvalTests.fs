@@ -78,3 +78,10 @@ let ``Eval addition function`` () =
                     Atom(Nil)))) |> eval
     let expected = Atom (Int 3)            
     actual |> should equal expected
+
+[<Fact>]
+let ``Def creates new variable`` () = 
+    let newEnv = Eval.define "x" (Atom(Int 1)) (Atom(Nil)) defaultEnvironment
+    let actual = newEnv "x"
+    actual.ToString() |> should equal (Some(Variable.Value(Atom(Int 1))).ToString())
+
