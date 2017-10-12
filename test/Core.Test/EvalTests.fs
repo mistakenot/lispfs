@@ -25,25 +25,48 @@ let ``Eval tree of (atom, atom), no environment`` () =
     let expected = Tree(Atom(Int 0), Atom(Int 1))
     actual |> should equal expected
 
-// [<Fact>]
-let ``Eval reference to value`` () = 
-    let expected = Variable.Value(Atom(Int 0))
-    let env = Env.add "x" expected defaultEnvironment
-    let actual = (Atom (Ref "x")) |> Eval.run env
+[<Fact>]
+let ``Invoke identity function`` () = 
+    let values = 
+        Tree(
+            Atom(Int 0),
+            Atom Nil)
+    let expected = Atom(Int 0)
+    let actual = Eval.invoke Lib.identity defaultEnvironment values
     actual |> should equal expected
 
-// [<Fact>]
+[<Fact>]
+let ``Invoke int addition`` () = 
+    let values = 
+        Tree(
+            Atom(Int 1),
+            Tree(
+                Atom(Int 2),
+                Atom Nil))
+    let expected = Atom(Int 3)
+    let actual = Eval.invoke Lib.addInt defaultEnvironment values
+    actual |> should equal expected            
+
+[<Fact>]
+let ``Eval reference to value`` () = 
+    let var = Variable.Value(Atom(Int 0))
+    let env = Env.add "x" var defaultEnvironment
+    let actual = Tree(Atom (Ref "x"), Atom(Nil)) |> Eval.run env
+    let expected = Tree(Atom(Int 0), Atom Nil)
+    actual |> should equal expected
+
+[<Fact>]
 let ``Eval identity function`` () = 
     let actual = 
         Tree(
-            Atom(Ref "id"), 
+            Atom(Ref "id"),
             Tree(
                 Atom(Int 0), 
                 Atom Nil)) |> eval
-    let expected = Tree(Atom (Int 0), Atom Nil)
+    let expected = Atom (Int 0)
     actual |> should equal expected
 
-// [<Fact>]
+[<Fact>]
 let ``Eval addition function`` () = 
     let actual = 
         Tree(

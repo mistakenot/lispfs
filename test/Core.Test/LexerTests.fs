@@ -6,7 +6,14 @@ open Lexer
 open FsUnit.Xunit
 
 [<Fact>]
-let ``Parse basic statement`` () = 
+let ``Parse value`` () = 
+    let statement = "1"
+    let actual = Lexer.tokenise statement
+    let expected = [Symb "1"]
+    actual |> should equal expected
+    
+[<Fact>]
+let ``Parse empty list`` () = 
     let statement = "()"
     let actual = Lexer.tokenise statement
     let expected = [OpenB; Token.CloseB]

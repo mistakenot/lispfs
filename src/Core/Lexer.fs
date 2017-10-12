@@ -37,7 +37,7 @@ module Lexer
                 | ')' :: tail -> loop None (accum @ [identToToken s; Token.CloseB]) tail
                 | ' ' :: tail -> loop None (accum @ [identToToken s]) tail
                 | c :: tail   -> loop (s @ [c] |> Some) accum tail
-                | [] -> accum
+                | [] -> identToToken s :: accum
             | None -> 
                 match str with
                 | '(' :: tail -> loop None (accum @ [Token.OpenB]) tail
@@ -45,20 +45,5 @@ module Lexer
                 | ' ' :: tail -> loop None (accum) tail
                 | c :: tail   -> loop (Some([c])) accum tail
                 | [] -> accum
-
-        let rec wrapAtoms = function
-            | Symb a :: Symb b :: tail -> 
-                Symb a :: OpenB :: wrapAtoms (Symb b :: tail) @ [CloseB]
-            | head :: tail -> 
-                head :: wrapAtoms tail
-            | [] -> []
-
-        let rec wrapNodes = function
-            | Symb a :: OpenB :: tail -> 
-                let (contents, rest) = contentsFrom (OpenB :: tail)
-                Symb a :: OpenB :: OpenB :: contents @ [CloseB; CloseB] @ wrapNodes rest
-            | head :: tail -> 
-                head :: wrapNodes tail
-            | [] -> []
 
         Seq.toList >> loop None []
